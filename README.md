@@ -47,7 +47,7 @@ These milestones, whenever feasible, should be accomplished with core and standa
 
 ## 2.1. Command-Line Options
 
-Every worker has to obbey to a well-known set of command-line options:
+Every worker has to obey to a well-known set of command-line options:
 
 - **-h / --help**: shows the usage message for the worker;
 - **-v / --version**: shows the worker's name and version;
@@ -70,7 +70,7 @@ The configuration files can be in any of the following formats:
 
 The configuration works under one of two modes:
 
-- **Multiple**: each configuration file is merged against the current configuration in order to fullfil a complete configuration;
+- **Multiple**: each configuration file is merged against the current configuration in order to fulfil a complete configuration;
 - **Flat**: only one configuration file is read and it must correspond to a complete configuration.
 
 The default mode is to read multiple configuration files and merged them into one virtual complete file. The flat mode must be enabled through a specific command-line option.
@@ -110,9 +110,9 @@ The features provided by this layer are:
 The features provided by this layer are:
 
 - **Initialize**: initializes the flag mechanism, if explicitly defined in configuration section;
-- **Set _Processing_**: sets the flag as _worker still executing_, which should prevent other instances of that worker to run simultanenously;
+- **Set _Processing_**: sets the flag as _worker still executing_, which should prevent other instances of that worker to run simultaneously;
 - **Set _Terminated_**: sets the flag as _worker terminated successfully_, which should enable another instance of that worker to run;
-- **Set _Errored_**: sets the flag as _worker terminated abnormally_, which should prevent other instances of that worker to run simultanenously, until the root cause of the problem is fixed.
+- **Set _Errored_**: sets the flag as _worker terminated abnormally_, which should prevent other instances of that worker to run simultaneously, until the root cause of the problem is fixed.
 
 ## 2.5. Network
 
@@ -139,7 +139,7 @@ The features provided by this layer are:
 - **Copy**: operating system agnostic way of safely copying a file, in 2 stages: first copies the file as a temporary file and if successfully then rename it to the final file;
 - **Move**: operating system agnostic way of safely moving a file, in 3 stages: first copies the file as a temporary file, if successfully then rename it to the final file and then removes the original file;
 - **Collect**: moves an input file from the input folder into the working folder, by using the safe move feature;
-- **Deliver**: moves an ouput file from the working folder into the output folder, by using the safe copy feature;
+- **Deliver**: moves an output file from the working folder into the output folder, by using the safe copy feature;
 - **Clean**: removes the output files that are not deliverables of the worker;
 - **Archive**: archives the final files, optionally compressing them by using one of the well known formats: gz, bz2, zip.
 
@@ -170,3 +170,7 @@ The features provided by this layer are:
 **Note**: since not all workers require database connections then neither a connection must be established and neither any driver must be loaded for the code to work.
 
 ## 2.9. Others
+
+### 2.9.1. Messaging
+
+### 2.9.2. Workbooks
