@@ -13,19 +13,19 @@ Command Line re-usable scaffold for coding small units of work that follow the C
 
 # 2. Milestones
 
-## 2.1. Command-Line Options
+## 2.1. Logging
 
-## 2.2. Configuration
+## 2.2. Command-Line Options
 
-## 2.3. Logging
+## 2.3. Configuration
 
 ## 2.4. Flags
 
-## 2.5. Network
+## 2.5. File and Folders
 
-## 2.6. File and Folders
+## 2.6. Shell and Processes
 
-## 2.7. Shell and Processes
+## 2.7. Network
 
 ## 2.8. DataBase
 
