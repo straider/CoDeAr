@@ -28,6 +28,8 @@ What if with minimal to no effort it would be possible to just focus on implemen
 
 Although this re-usable scaffold can be seen as a library or framework it should be considered as a set of best-practices to follow.
 
+The processes to implement, called **workers**, all follow the same execution steps: collect information ( from files or tables ), process that information ( in distinct manners ) and deliver the processed information ( in files or tables, which may also include archiving with or without compression ).
+
 Currently there are no plans to make this a tool.
 
 ## 1.3. Terms and Concepts
@@ -45,53 +47,7 @@ Before using the code one should get acquainted with these terms and concepts:
 
 These milestones, whenever feasible, should be accomplished with core and standard library features. Although 3rd party libraries are allowed, their usage should be limited and avoided as much as possible.
 
-## 2.1. Command-Line Options
-
-Every worker has to obey to a well-known set of command-line options:
-
-- **-h / --help**: shows the usage message for the worker;
-- **-v / --version**: shows the worker's name and version;
-- **-c / --configuration-file**: loads a specific flat configuration file, bypassing the default configuration;
-- **-s / --show-configuration**: outputs the complete configuration, in a given format ( yaml, json );
-- **-g / --get-folder**: shows the absolute path of the given folder name ( input, working, output, archive ).
-
-**Note**: specific command-line options are only known ( and handled ) by the worker and should not be "configurable".
-
-## 2.2. Configuration
-
-The configuration files can be in any of the following formats:
-
-- YAML
-- JSON
-- XML
-- INI
-
-**Note**: All configuration files are located in a folder relative to the top folder of the worker.
-
-The configuration works under one of two modes:
-
-- **Multiple**: each configuration file is merged against the current configuration in order to fulfil a complete configuration;
-- **Flat**: only one configuration file is read and it must correspond to a complete configuration.
-
-The default mode is to read multiple configuration files and merged them into one virtual complete file. The flat mode must be enabled through a specific command-line option.
-
-**Note**: one improvement could be to enable to disable the default configuration file, in any of the two modes.
-
-The features provided by this layer are:
-
-- **Load Configuration Files**: loads multiple configuration files, in a specific order of formats and where all file have the same name of the worker;
-- **Load Configuration File**: loads a specific complete configuration file, in any of the allowed formats;
-- **Show Configuration**: outputs the complete configuration, in one of the allowed formats ( specified as argument );
-- **Get Configuration**: this is actually a set of sub-features that allows access to frequently used sections of the complete configuration:
-  - **Logging**;
-  - **Folders**;
-  - **Flags**;
-  - **DataBases**;
-  - **Worker**.
-- **Expand Properties**: in order to allow configuration files that hold values that are dependant on other properties it is necessary to control when these properties must be expanded on those values;
-- **Add Property**: sometimes it's necessary to control other properties that are not configurable but that are useful when expanding properties.
-
-## 2.3. Logging
+## 2.1. Logging
 
 Logging messages should be outputted to the console only and not to a file when there's no configuration. But by default the logging messages should be outputted to the console and to a file, both set at INFO logging level.
 
@@ -105,6 +61,51 @@ The features provided by this layer are:
 
 **Note**: the logging messages must be encoded in UTF-8.
 
+## 2.2. Command-Line Options
+
+Every worker has to obey to a well-known set of command-line options:
+
+- **-h / --help**: shows the usage message for the worker;
+- **-v / --version**: shows the worker's name and version;
+- **-c / --configuration-file**: loads a specific flat configuration file, bypassing the default configuration;
+- **-s / --show-configuration**: outputs the complete configuration, in a given format ( yaml, json );
+- **-g / --get-folder**: shows the absolute path of the given folder name ( input, working, output, archive ).
+
+**Note**: specific command-line options are only known ( and handled ) by the worker and should not be "configurable".
+
+## 2.3. Configuration
+
+The configuration files can be in any of the following formats, in order:
+
+- YAML
+- JSON ( primary target, usually offered by the Standard Library );
+- XML ( secondary target );
+- INI ( terciary target, since it's a flat data format rather than an hierarchical data format ).
+
+**Note**: All configuration files are located in a folder relative to the top folder of the worker.
+
+The configuration works under one of two modes:
+
+- **Multiple**: each configuration file is merged against the current configuration in order to fulfil a complete configuration;
+- **Flat**: only one configuration file is read and it must correspond to a complete configuration.
+
+The default mode is to read multiple configuration files and merged them into one virtual complete file. The flat mode must be enabled through a specific command-line option. Each mode starts by reading a common configuration file, which can be overrided by specific configuration files.
+
+The features provided by this layer are:
+
+- **Load Configuration Files**: loads multiple configuration files, in a specific order of formats, that have the same name of the worker;
+- **Load Configuration File**: loads a specific complete configuration file, in any of the allowed formats;
+- **Show Configuration**: outputs the complete configuration, in one of the allowed formats ( specified as argument );
+- **Get Configuration**: this is actually a set of sub-features that allows access to frequently used sections of the complete configuration:
+  - **Logging**;
+  - **Folders**;
+  - **Flags**;
+  - **DataBases**;
+  - **Services**;
+  - **Worker**.
+- **Expand Properties**: in order to allow configuration files that hold values that are dependant on other properties it is necessary to control when these properties must be expanded on those values;
+- **Add Property**: sometimes it's necessary to control other properties that are not configurable but that are useful when expanding properties.
+
 ## 2.4. Flags
 
 The features provided by this layer are:
@@ -114,21 +115,7 @@ The features provided by this layer are:
 - **Set _Terminated_**: sets the flag as _worker terminated successfully_, which should enable another instance of that worker to run;
 - **Set _Errored_**: sets the flag as _worker terminated abnormally_, which should prevent other instances of that worker to run simultaneously, until the root cause of the problem is fixed.
 
-## 2.5. Network
-
-The features provided by this layer are:
-
-- **Open Connection**: establishes a connection with the configured remote server;
-- **List Files**: returns a list of files in current remote folder;
-- **Get File**: collects a remote file given it's filename;
-- **Put File**: delivers a local file to a remote location.
-
-The protocol used is one of the following well-known file transfer protocols:
-
-- **FTP**
-- **SFTP**
-
-## 2.6. File and Folders
+## 2.5. File and Folders
 
 The features provided by this layer are:
 
@@ -145,11 +132,25 @@ The features provided by this layer are:
 
 **Note**: the deliver feature must copy the final file, instead of moving it, because the archive feature may require this final file at the working folder. If the archive feature uses the final file on the output folder then it will only work when there's an output folder configured, even in cases where the deliverable produced is not to be stored in the output folder. But in which real-case scenario is this useful?
 
-## 2.7. Shell and Processes
+## 2.6. Shell and Processes
 
 The features provided by this layer are:
 
 - **Execute Command**: executes another process as a _child_ of the worker.
+
+## 2.7. Network
+
+The features provided by this layer are:
+
+- **Open Connection**: establishes a connection with the configured remote server;
+- **List Files**: returns a list of files in current remote folder;
+- **Get File**: collects a remote file given it's filename;
+- **Put File**: delivers a local file to a remote location.
+
+The protocol used is one of the following well-known file transfer protocols:
+
+- **FTP**
+- **SFTP**
 
 ## 2.8. DataBase
 
